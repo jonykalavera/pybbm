@@ -1,4 +1,4 @@
-PyBBM Django forum solution
+PyBBM Django forum solution + Sub-Boards
 ===========================
 PyBBM - modified version of pybb (developed by lorien and dropped in mid 2010).
 
@@ -19,3 +19,7 @@ i18n support
 PYBB support only english and russian translations now.
 You should enable django.middleware.locale.LocaleMiddleware to activate
 django locale autodetecting.
+
+What is the purpose of this fork?
+============
+I need to add sub-boards as well as some other features to pybbm.
