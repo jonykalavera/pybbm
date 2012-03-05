@@ -23,3 +23,8 @@ django locale autodetecting.
 What is the purpose of this fork?
 ============
 I need to add sub-boards as well as some other features to pybbm.
+
+TO-DO List
+============
+* Picture for Forums
+* Mptt https://github.com/django-mptt/django-mptt/

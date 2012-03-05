@@ -88,6 +88,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 AUTH_PROFILE_MODULE = 'pybb.Profile'
 
 PYBB_TEMPLATE = "pybb/bootstrap_base.html"
+ACCOUNT_ACTIVATION_DAYS=30
 
 LOGGING = {
     'version': 1,

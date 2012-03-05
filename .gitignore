@@ -1,6 +1,7 @@
 .idea
-*.pyc
+*.py[co]
 local_path.py
 settings_local.py
 dist
 *.egg-info
+*.geany
