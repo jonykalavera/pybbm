@@ -16,6 +16,47 @@
             {{ forum.headline|safe }}
         </div>
     {% endif %}
+    <table class="category-table">
+        <tr class="forum-row head-row">
+                <th class="forum-name">
+                    {% trans "Forum" %}
+                </th>
+                <th class="forum-topic-count">
+                    {% trans "Topics" %}
+                </th>
+                <th class="forum-post-count">
+                    {% trans "Posts" %}
+                </th>
+                <th class="forum-last-post">
+                    {% trans "Last posts" %}
+                </th>
+        </tr>
+        {% for subforum in forum.child_forums.all|pybb_forum_unread:user %}
+            <tr class="forum-row">
+                <td class="forum-name {% if subforum.unread %} unread {% endif %}">
+                    <div class='state-indicator'></div>
+                    <a href='{{ subforum.get_absolute_url }}'>{{ subforum.name }}</a> {% if subforum.hidden %}[{% trans "Hidden" %}]{% endif %}
+                    <div class='forum-description'>
+                        {{ subforum.description|safe }}
+                    </div>
+                </td>
+                <td class="forum-topic-count">
+                    {{ subforum.topic_count }}
+                </td>
+                <td class="forum-post-count">
+                    {{ subforum.post_count }}
+                </td>
+                <td class="forum-last-post">
+                    {% if subforum.updated %}
+                        {{ subforum.updated|date:"d.m.Y H:i" }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <h3>{% trans "No forums created" %}</h3>
+            <a href="{% url admin:pybb_forum_add %}">{% trans "Add forum now" %}</a>
+        {% endfor %}
+    </table>
     {% include "pybb/pagination.html" %}
     <table class='topic-list'>
         <tr class="topic-row head-row">

@@ -35,7 +35,7 @@ class ForumAdmin(admin.ModelAdmin):
          ),
         (_('Additional options'), {
                 'classes': ('collapse',),
-                'fields': ('updated', 'description', 'headline', 'post_count', 'moderators')
+                'fields': ('parent_forum', 'updated', 'description', 'headline', 'post_count', 'moderators')
                 }
             ),
         )

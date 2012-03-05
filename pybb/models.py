@@ -87,6 +87,8 @@ class Category(models.Model):
 
 class Forum(models.Model):
     category = models.ForeignKey(Category, related_name='forums', verbose_name=_('Category'))
+    parent_forum = models.ForeignKey('self', related_name='child_forums', 
+        blank=True, null=True, verbose_name=_('Parent forum'))
     name = models.CharField(_('Name'), max_length=80)
     position = models.IntegerField(_('Position'), blank=True, default=0)
     description = models.TextField(_('Description'), blank=True)
@@ -99,7 +101,7 @@ class Forum(models.Model):
     headline = models.TextField(_('Headline'), blank=True, null=True)
 
     class Meta(object):
-        ordering = ['position']
+        ordering = ['position',]
         verbose_name = _('Forum')
         verbose_name_plural = _('Forums')
 
