@@ -4,6 +4,9 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
+from feincms.admin.tree_editor import TreeEditor
+
+from pybb.forms import ForumForm
 from pybb.models import Category, Forum, Topic, Post, Profile, Attachment, TopicReadTracker, ForumReadTracker
 
 class ForumInlineAdmin(admin.TabularInline):
@@ -21,21 +24,22 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [ForumInlineAdmin]
 
 
-class ForumAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'hidden', 'position', 'topic_count']
+class ForumAdmin(TreeEditor):
+    list_display = ['name', 'category', 'hidden', 'topic_count']
     list_per_page = 20
     raw_id_fields = ['moderators']
     ordering = ['-category']
     search_fields = ['name', 'category__name']
-    list_editable = ['position', 'hidden']
+    list_editable = ['hidden']
+    form = ForumForm
     fieldsets = (
         (None, {
-                'fields': ('category', 'name', 'hidden', 'position')
+                'fields': ('category', 'name', 'picture', 'hidden')
                 }
          ),
         (_('Additional options'), {
                 'classes': ('collapse',),
-                'fields': ('parent_forum', 'updated', 'description', 'headline', 'post_count', 'moderators')
+                'fields': ('updated', 'description', 'headline', 'post_count', 'moderators')
                 }
             ),
         )

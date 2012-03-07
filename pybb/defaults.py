@@ -77,3 +77,18 @@ PYBB_ENABLE_ANONYMOUS_POST = getattr(settings, 'PYBB_ENABLE_ANONYMOUS_POST', Fal
 PYBB_ANONYMOUS_USERNAME = getattr(settings, 'PYBB_ANONYMOUS_USERNAME', 'Anonymous')
 PYBB_PREMODERATION = getattr(settings, 'PYBB_PREMODERATION', False)
 PYBB_ENABLE_SELF_CSS = getattr(settings, 'PYBB_ENABLE_SELF_CSS', False)
+
+PYBB_FORUM_PICTURE_UPLOAD_PATH = "uploads/forums/"
+PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE = 104858 # 100kb = 0.1*2**10*2**10
+PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES = (
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/gif',
+    'application/octet-stream',
+)
+PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS = (
+    'jpg',
+    'png',
+    'gif',
+)

@@ -14,6 +14,7 @@ from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.fields import AutoOneToOneField
+from mptt.models import MPTTModel, TreeForeignKey
 from sorl.thumbnail import ImageField
 from pybb.util import unescape
 
@@ -85,21 +86,41 @@ class Category(models.Model):
         return Post.objects.filter(topic__forum__category=self).select_related()
 
 
-class Forum(models.Model):
-    category = models.ForeignKey(Category, related_name='forums', verbose_name=_('Category'))
-    parent_forum = models.ForeignKey('self', related_name='child_forums', 
+def forum_picture_upload_path(instance, filename):
+    import hashlib
+    import os
+    from random import random
+    from django.utils.encoding import smart_str
+    params = (
+        hashlib.sha1("%s-%f" % (smart_str(filename), random())).hexdigest(),
+        filename.split('.')[-1],
+    )
+    return os.path.join(defaults.PYBB_FORUM_PICTURE_UPLOAD_PATH, "%s.%s" % params)
+
+
+class Forum(MPTTModel):
+    category = models.ForeignKey(Category, related_name='forums', 
+        verbose_name=_('Category'))
+    parent = TreeForeignKey('self', related_name='children', 
         blank=True, null=True, verbose_name=_('Parent forum'))
+    picture = models.ImageField(upload_to=forum_picture_upload_path,
+        blank=True, null=True, verbose_name=_("Picture"))
     name = models.CharField(_('Name'), max_length=80)
     position = models.IntegerField(_('Position'), blank=True, default=0)
     description = models.TextField(_('Description'), blank=True)
-    moderators = models.ManyToManyField(User, blank=True, null=True, verbose_name=_('Moderators'))
+    moderators = models.ManyToManyField(User, blank=True, null=True, 
+        verbose_name=_('Moderators'))
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    post_count = models.IntegerField(_('Post count'), blank=True, default=0)
-    topic_count = models.IntegerField(_('Topic count'), blank=True, default=0)
-    hidden = models.BooleanField(_('Hidden'), blank=False, null=False, default=False)
-    readed_by = models.ManyToManyField(User, through='ForumReadTracker', related_name='readed_forums')
+    post_count = models.IntegerField(_('Post count'), blank=True, 
+        default=0)
+    topic_count = models.IntegerField(_('Topic count'), blank=True, 
+        default=0)
+    hidden = models.BooleanField(_('Hidden'), blank=False, null=False, 
+        default=False)
+    readed_by = models.ManyToManyField(User, through='ForumReadTracker', 
+        related_name='readed_forums')
     headline = models.TextField(_('Headline'), blank=True, null=True)
-
+    
     class Meta(object):
         ordering = ['position',]
         verbose_name = _('Forum')
@@ -113,7 +134,8 @@ class Forum(models.Model):
         self.topic_count = Topic.objects.filter(forum=self).count()
         last_post = self.get_last_post()
         if last_post:
-            self.updated = self.last_post.updated or self.last_post.created
+            self.updated = self.last_post.updated or \
+                self.last_post.created
         self.save()
 
     def get_absolute_url(self):

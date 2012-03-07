@@ -50,7 +50,7 @@ class IndexView(generic.ListView):
         ctx = super(IndexView, self).get_context_data(**kwargs)
         categories = list(ctx['categories'])
         for category in categories:
-            category.forums_accessed = filter_hidden(self.request, category.forums.filter(parent_forum=None))
+            category.forums_accessed = filter_hidden(self.request, category.forums.filter(parent=None))
         ctx['categories'] = categories
         return ctx
 

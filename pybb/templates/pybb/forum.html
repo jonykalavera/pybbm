@@ -1,5 +1,5 @@
 {% extends 'pybb/base.html' %}
-{% load pybb_tags i18n %}
+{% load pybb_tags i18n thumbnail %}
 
 {% block title %}{{ forum.name }}{% endblock title %}
 
@@ -16,11 +16,11 @@
             {{ forum.headline|safe }}
         </div>
     {% endif %}
-    {% if forum.child_forums.count %}
+    {% if forum.get_children.count %}
     <table class="category-table">
         <tr class="forum-row head-row">
                 <th class="forum-name">
-                    {% trans "Subforum" %}
+                    {% trans "Sub-Boards" %}
                 </th>
                 <th class="forum-topic-count">
                     {% trans "Topics" %}
@@ -32,10 +32,13 @@
                     {% trans "Last posts" %}
                 </th>
         </tr>
-        {% for subforum in forum.child_forums.all|pybb_forum_unread:user %}
+        {% for subforum in forum.get_children|pybb_forum_unread:user %}
             <tr class="forum-row">
                 <td class="forum-name {% if subforum.unread %} unread {% endif %}">
                     <div class='state-indicator'></div>
+                    {% thumbnail subforum.picture "64x50" format="PNG" as th %}
+                    <img src="{{subforum.picture.url}}" width="{{th.width}}px" height="{{th.height}}px"/>
+                    {% empty %}{% endthumbnail %}
                     <a href='{{ subforum.get_absolute_url }}'>{{ subforum.name }}</a> {% if subforum.hidden %}[{% trans "Hidden" %}]{% endif %}
                     <div class='forum-description'>
                         {{ subforum.description|safe }}

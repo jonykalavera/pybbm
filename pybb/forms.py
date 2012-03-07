@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.images import get_image_dimensions
 from django.core.exceptions import ObjectDoesNotExist
 import re
 from datetime import datetime
@@ -7,13 +8,43 @@ import inspect
 
 from django import forms
 from django.utils.translation import ugettext as _
-from pybb.models import Topic, Post, Profile, Attachment
+from pybb.models import Topic, Post, Profile, Attachment, Forum
 from django.contrib.auth.models import User
 
 import defaults
 from django.conf import settings
 
 MEDIA_ROOT = settings.MEDIA_ROOT
+
+PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE = defaults.PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE
+PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES = defaults.PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES
+PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS = defaults.PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS
+
+class ForumForm(forms.ModelForm):
+    class Meta(object):
+        model = Forum
+    
+    def clean_picture(self):
+        picture = self.cleaned_data.get('picture', None)
+        if picture:
+            img_width, img_height = get_image_dimensions(picture)
+
+            if hasattr(picture,"content_type") and picture.content_type not in PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES:
+                raise forms.ValidationError(
+                    _(u"File format is not allowed: (%s).") % picture.content_type)
+            elif picture.size == 0:
+                raise forms.ValidationError(_(u"The uploaded file is empty."))
+            elif picture.size > PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE:
+                raise forms.ValidationError(
+                    _(u"The image is bigger than the limit: (%d Mb).") % (
+                        PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE/1024**2))
+            elif picture.name.split('.')[-1].lower() not in PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS:
+                raise forms.ValidationError(
+                _(u"The file extension is not allowed: (%s)") % (
+                    ", ".join(PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS)))
+
+        return picture
+
 
 class AttachmentForm(forms.ModelForm):
     class Meta(object):
