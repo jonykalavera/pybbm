@@ -37,7 +37,7 @@
                 <td class="forum-name {% if subforum.unread %} unread {% endif %}">
                     <div class='state-indicator'></div>
                     {% thumbnail subforum.picture "64x50" format="PNG" as th %}
-                    <img src="{{subforum.picture.url}}" width="{{th.width}}px" height="{{th.height}}px"/>
+                    <img src="{{th.url}}" width="{{th.width}}px" height="{{th.height}}px"/>
                     {% empty %}{% endthumbnail %}
                     <a href='{{ subforum.get_absolute_url }}'>{{ subforum.name }}</a> {% if subforum.hidden %}[{% trans "Hidden" %}]{% endif %}
                     <div class='forum-description'>
