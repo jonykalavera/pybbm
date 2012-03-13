@@ -1,3 +1,9 @@
+WANRNING
+===========================
+This fork is still in the early stages of development and usage is discouraged.
+At least for now. We'll let you know when the cookies are ready :)
+
+
 PyBBM Django forum solution + Sub-Boards
 ===========================
 PyBBM - modified version of pybb (developed by lorien and dropped in mid 2010).
