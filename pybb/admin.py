@@ -39,7 +39,7 @@ class ForumAdmin(TreeEditor):
          ),
         (_('Additional options'), {
                 'classes': ('collapse',),
-                'fields': ('updated', 'description', 'headline', 'post_count', 'moderators')
+                'fields': ('parent', 'updated', 'description', 'headline', 'post_count', 'moderators')
                 }
             ),
         )
