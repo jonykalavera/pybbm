@@ -68,7 +68,7 @@ class CategoryView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super(CategoryView, self).get_context_data(**kwargs)
-        ctx['category'].forums_accessed = filter_hidden(self.request, ctx['category'].forums.all())
+        ctx['category'].forums_accessed = filter_hidden(self.request, ctx['category'].forums.filter(parent__isnull=True))
         ctx['categories'] = [ctx['category']]
         return ctx
 
