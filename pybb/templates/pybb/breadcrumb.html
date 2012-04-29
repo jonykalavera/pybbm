@@ -3,6 +3,7 @@
     {% if request.path != '/' %}
         <li><a href="/">{% trans "Home" %}</a> <span class="divider">/</span></li>
     {% endif %}
+    <li><a href="{% url pybb:index %}">{% trans "Forums" %}</a> <span class="divider">/</span></li>
     {% if object %}
             {% if object.get_parents %}
             {% for obj in object.get_parents %}
