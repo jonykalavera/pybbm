@@ -225,7 +225,8 @@ class Topic(models.Model):
         """
         Used in templates for breadcrumb building
         """
-        return [self.forum.category]+ self.forum.get_ancestors()
+        parents=[self.forum.category]+ list(self.forum.get_ancestors())
+        return parents
 
 
 class RenderableItem(models.Model):
