@@ -18,7 +18,7 @@ setup(
             'pytils',
             'django-annoying',
             'sorl-thumbnail',
-            'django-pure-pagination'
+            'django-pure-pagination',
             'django-mptt',
             'FeinCMS==1.5.2',
             ],
