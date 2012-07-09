@@ -11,9 +11,15 @@ feeds = {
     'topics': LastTopics
 }
 
+def feed(request, url):
+    try:
+        return feeds[url]()(request)
+    except:
+        raise Http404
+
 urlpatterns = patterns('',
                        # Syndication feeds
-                       url('^feeds/(?P<url>.*)/$', lambda url: feeds.get(url) or raise Http404, name='feed'),
+                       url('^feeds/(?P<url>.*)/$', feed, name='feed'),
                        )
 
 urlpatterns += patterns('pybb.views',
