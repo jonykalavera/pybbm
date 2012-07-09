@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-
+from django.http import Http404
 from pybb.feeds import LastPosts, LastTopics
 from views import IndexView, CategoryView, ForumView, TopicView, AddPostView, EditPostView,\
     UserView, PostView, ProfileEditView, DeletePostView, StickTopicView, UnstickTopicView,\
@@ -13,8 +13,7 @@ feeds = {
 
 urlpatterns = patterns('',
                        # Syndication feeds
-                       url('^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
-                           {'feed_dict': feeds}, name='feed'),
+                       url('^feeds/(?P<url>.*)/$', lambda url: feeds.get(url) or raise Http404, name='feed'),
                        )
 
 urlpatterns += patterns('pybb.views',
