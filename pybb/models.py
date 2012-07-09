@@ -158,8 +158,9 @@ class Forum(MPTTModel):
     def get_parents(self):
         """
         Used in templates for breadcrumb building
-        """
-        return self.category,
+        """ 
+        parents=[self.category]+ list(self.get_ancestors())
+        return parents
 
 
 class Topic(models.Model):
@@ -224,7 +225,8 @@ class Topic(models.Model):
         """
         Used in templates for breadcrumb building
         """
-        return self.forum.category, self.forum
+        parents=[self.forum.category]+ list(self.forum.get_ancestors())+[self.forum]
+        return parents
 
 
 class RenderableItem(models.Model):
@@ -304,7 +306,7 @@ class Post(RenderableItem):
         """
         Used in templates for breadcrumb building
         """
-        return self.topic.forum.category, self.topic.forum, self.topic,
+        return [self.topic.forum.category]+ list(self.topic.forum.get_ancestors)+[self.topic.forum]
 
 class PybbProfile(models.Model):
     """
