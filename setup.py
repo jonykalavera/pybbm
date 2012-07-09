@@ -4,8 +4,8 @@ setup(
     version = '0.6.3',
     description = 'PyBB Modified. Django forum application',
     long_description = open('README.rst').read(),
-    author = 'Pavel Zhukov',
-    author_email = 'gelios@gmail.com',
+    author = 'Jony Kalavera',
+    author_email = 'mr.jony@gmail.com',
     name = 'pybbm',
     packages = find_packages(),
     include_package_data = True,
@@ -19,6 +19,8 @@ setup(
             'django-annoying',
             'sorl-thumbnail',
             'django-pure-pagination'
+            'django-mptt',
+            'FeinCMS==1.5.2',
             ],
 
     license = "BSD",
