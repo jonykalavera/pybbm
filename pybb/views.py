@@ -73,6 +73,9 @@ class CategoryView(generic.DetailView):
         ctx['categories'] = [ctx['category']]
         return ctx
 
+def redirect_forum(request, id):
+    forum = get_object_or_404(Forum, kwargs={'id':id})
+    return HttpResponsePermanentRedirect(forum.get_absolute_url())
 
 class ForumView(generic.ListView):
 
