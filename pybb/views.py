@@ -109,6 +109,11 @@ class ForumView(generic.ListView):
         return qs
 
 
+def redirect_topic(request, id):
+    topic = get_object_or_404(Topic, kwargs={'id':id})
+    return HttpResponsePermanentRedirect(topic.get_absolute_url())
+
+
 class TopicView(generic.ListView):
     paginate_by = defaults.PYBB_TOPIC_PAGE_SIZE
     template_object_name = 'post_list'

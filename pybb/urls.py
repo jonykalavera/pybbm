@@ -47,7 +47,7 @@ urlpatterns += patterns('pybb.views',
 
     # Topic
     url(
-        '^topic/((?P<pk>\d+)|(?P<id>\d+))/$',
+        '^topic/(?P<id>\d+)/$',
         'redirect_topic', name='redirect_topic'
     ),
     url(
