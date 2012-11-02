@@ -99,9 +99,9 @@ def forum_picture_upload_path(instance, filename):
 
 
 class Forum(MPTTModel):
-    category = models.ForeignKey(Category, related_name='forums', 
+    category = models.ForeignKey(Category, related_name='forums',
         verbose_name=_('Category'))
-    parent = TreeForeignKey('self', related_name='children', 
+    parent = TreeForeignKey('self', related_name='children',
         blank=True, null=True, verbose_name=_('Parent forum'))
     picture = models.ImageField(upload_to=forum_picture_upload_path,
         blank=True, null=True, verbose_name=_("Picture"))
@@ -109,19 +109,19 @@ class Forum(MPTTModel):
     slug = models.SlugField(unique=True)
     position = models.IntegerField(_('Position'), blank=True, default=0)
     description = models.TextField(_('Description'), blank=True)
-    moderators = models.ManyToManyField(User, blank=True, null=True, 
+    moderators = models.ManyToManyField(User, blank=True, null=True,
         verbose_name=_('Moderators'))
     updated = models.DateTimeField(_('Updated'), blank=True, null=True)
-    post_count = models.IntegerField(_('Post count'), blank=True, 
+    post_count = models.IntegerField(_('Post count'), blank=True,
         default=0)
-    topic_count = models.IntegerField(_('Topic count'), blank=True, 
+    topic_count = models.IntegerField(_('Topic count'), blank=True,
         default=0)
-    hidden = models.BooleanField(_('Hidden'), blank=False, null=False, 
+    hidden = models.BooleanField(_('Hidden'), blank=False, null=False,
         default=False)
-    readed_by = models.ManyToManyField(User, through='ForumReadTracker', 
+    readed_by = models.ManyToManyField(User, through='ForumReadTracker',
         related_name='readed_forums')
     headline = models.TextField(_('Headline'), blank=True, null=True)
-    
+
     class Meta(object):
         ordering = ['position',]
         verbose_name = _('Forum')
@@ -160,7 +160,7 @@ class Forum(MPTTModel):
     def get_parents(self):
         """
         Used in templates for breadcrumb building
-        """ 
+        """
         parents=[self.category]+ list(self.get_ancestors())
         return parents
 
