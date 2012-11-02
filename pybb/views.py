@@ -84,7 +84,7 @@ class ForumView(generic.ListView):
     template_name = 'pybb/forum.html'
     paginator_class = Paginator
 
-    def dispatch(request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         if kwargs.get('id'):
             forum = get_object_or_404(Forum, pk=kwargs.get('id'))
             return HttpResponsePermanentRedirect(forum.get_absolute_url())
@@ -115,7 +115,7 @@ class TopicView(generic.ListView):
     template_name = 'pybb/topic.html'
     paginator_class = Paginator
 
-    def dispatch(request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         if kwargs.get('id'):
             topic = get_object_or_404(Topic, pk=kwargs.get('id'))
             return HttpResponsePermanentRedirect(topic.get_absolute_url())
