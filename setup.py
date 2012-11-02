@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     version = '0.6.3',
-    description = 'PyBB Modified. Django forum application',
+    description = 'PyBB Modified Again. Django forum application',
     long_description = open('README.rst').read(),
     author = 'Jony Kalavera',
     author_email = 'mr.jony@gmail.com',

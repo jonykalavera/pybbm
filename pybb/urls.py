@@ -26,7 +26,7 @@ urlpatterns += patterns('pybb.views',
                         # Index, Category, Forum
                         url('^$', IndexView.as_view(), name='index'),
                         url('^category/(?P<pk>\d+)/$', CategoryView.as_view(), name='category'),
-                        url('^forum/(?P<pk>\d+)/$', ForumView.as_view(), name='forum'),
+                        url('^forum/((?P<pk>\d+)|(?P<slug>[-\w]+))/$', ForumView.as_view(), name='forum'),
 
                         # User
                         url('^users/(?P<username>[^/]+)/$', UserView.as_view(), name='user'),
@@ -36,15 +36,15 @@ urlpatterns += patterns('pybb.views',
                         url('^profile/edit/$', ProfileEditView.as_view(), name='edit_profile'),
 
                         # Topic
-                        url('^topic/(?P<pk>\d+)/$', TopicView.as_view(), name='topic'),
-                        url('^topic/(?P<pk>\d+)/stick/$', StickTopicView.as_view(), name='stick_topic'),
-                        url('^topic/(?P<pk>\d+)/unstick/$', UnstickTopicView.as_view(), name='unstick_topic'),
-                        url('^topic/(?P<pk>\d+)/close/$', CloseTopicView.as_view(), name='close_topic'),
-                        url('^topic/(?P<pk>\d+)/open/$', OpenTopicView.as_view(), name='open_topic'),
+                        url('^topic/((?P<pk>\d+)|(?P<slug>[-\w]+))/$', TopicView.as_view(), name='topic'),
+                        url('^topic/(?P<slug>[-\w]+)/stick/$', StickTopicView.as_view(), name='stick_topic'),
+                        url('^topic/(?P<slug>[-\w]+)/unstick/$', UnstickTopicView.as_view(), name='unstick_topic'),
+                        url('^topic/(?P<slug>[-\w]+)/close/$', CloseTopicView.as_view(), name='close_topic'),
+                        url('^topic/(?P<slug>[-\w]+)/open/$', OpenTopicView.as_view(), name='open_topic'),
 
                         # Add topic/post
-                        url('^forum/(?P<forum_id>\d+)/topic/add/$', AddPostView.as_view(), name='add_topic'),
-                        url('^topic/(?P<topic_id>\d+)/post/add/$', AddPostView.as_view(), name='add_post'),
+                        url('^forum/(?P<forum_slug>[-\w]+)/topic/add/$', AddPostView.as_view(), name='add_topic'),
+                        url('^topic/(?P<topic_slug>[-\w]+)/post/add/$', AddPostView.as_view(), name='add_post'),
 
                         # Post
                         url('^post/(?P<pk>\d+)/$', PostView.as_view(), name='post'),
@@ -56,9 +56,9 @@ urlpatterns += patterns('pybb.views',
                         #url('^attachment/(\w+)/$', 'show_attachment', name='pybb_attachment'),
 
                         # Subscription
-                        url('^subscription/topic/(\d+)/delete/$',
+                        url('^subscription/topic/(?P<slug>[-\w]+)/delete/$',
                             'delete_subscription', name='delete_subscription'),
-                        url('^subscription/topic/(\d+)/add/$',
+                        url('^subscription/topic/(?P<slug>[-\w]+)/add/$',
                             'add_subscription', name='add_subscription'),
 
                         # API

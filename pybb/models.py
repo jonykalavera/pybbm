@@ -106,6 +106,7 @@ class Forum(MPTTModel):
     picture = models.ImageField(upload_to=forum_picture_upload_path,
         blank=True, null=True, verbose_name=_("Picture"))
     name = models.CharField(_('Name'), max_length=80)
+    slug = models.SlugField(unique=True)
     position = models.IntegerField(_('Position'), blank=True, default=0)
     description = models.TextField(_('Description'), blank=True)
     moderators = models.ManyToManyField(User, blank=True, null=True, 
@@ -138,8 +139,9 @@ class Forum(MPTTModel):
                 self.last_post.created
         self.save()
 
+    @models.permalink
     def get_absolute_url(self):
-        return reverse('pybb:forum', kwargs={'pk': self.id})
+        return ('pybb:forum', [], {'slug': self.slug})
 
     @property
     def posts(self):
@@ -166,6 +168,7 @@ class Forum(MPTTModel):
 class Topic(models.Model):
     forum = models.ForeignKey(Forum, related_name='topics', verbose_name=_('Forum'))
     name = models.CharField(_('Subject'), max_length=255)
+    slug = models.SlugField(unique=True)
     created = models.DateTimeField(_('Created'), null=True)
     updated = models.DateTimeField(_('Updated'), null=True)
     user = models.ForeignKey(User, verbose_name=_('User'))
@@ -208,8 +211,9 @@ class Topic(models.Model):
     def last_post(self):
         return self.get_last_post()
 
+    @models.permalink
     def get_absolute_url(self):
-        return reverse('pybb:topic', kwargs={'pk': self.id})
+        return ('pybb:topic', [], {'slug': self.slug})
 
     def save(self, *args, **kwargs):
         if self.id is None:

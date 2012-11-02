@@ -3,7 +3,8 @@ import math
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models import F, Q
 from django.shortcuts import get_object_or_404, redirect, _get_queryset
-from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponse, Http404, \
+    HttpResponseForbidden, HttpResponsePermanentRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
@@ -79,6 +80,13 @@ class ForumView(generic.ListView):
     context_object_name = 'topic_list'
     template_name = 'pybb/forum.html'
     paginator_class = Paginator
+    
+    def dispatch(request, *args, **kwargs):
+        if kwargs.get('id'):
+            forum = get_object_or_404(Forum, pk=kwargs.get('id'))
+            return HttpResponsePermanentRedirect(forum.get_absolute_url())
+        else:
+            return super(ForumView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super(ForumView, self).get_context_data(**kwargs)
@@ -86,7 +94,7 @@ class ForumView(generic.ListView):
         return ctx
 
     def get_queryset(self):
-        self.forum = get_object_or_404(filter_hidden(self.request, Forum), pk=self.kwargs['pk'])
+        self.forum = get_object_or_404(filter_hidden(self.request, Forum), slug=self.kwargs['slug'])
         if self.forum.category.hidden and (not self.request.user.is_staff):
             raise Http404()
         qs = self.forum.topics.order_by('-sticky', '-updated').select_related()
@@ -103,6 +111,12 @@ class TopicView(generic.ListView):
     template_object_name = 'post_list'
     template_name = 'pybb/topic.html'
     paginator_class = Paginator
+    
+    def dispatch(request, *args, **kwargs):
+        if kwargs.get('id'):
+            topic = get_object_or_404(Topic, pk=kwargs.get('id'))
+            return HttpResponsePermanentRedirect(topic.get_absolute_url())
+        else:
 
     def get_queryset(self):
         self.topic = get_object_or_404(Topic.objects.select_related('forum'), pk=self.kwargs['pk'])
@@ -195,12 +209,12 @@ class AddPostView(FormChoiceMixin, generic.CreateView):
         ip = self.request.META.get('REMOTE_ADDR', '')
         forum = None
         topic = None
-        if 'forum_id' in self.kwargs:
+        if 'forum_slug' in self.kwargs:
             if not self.user.has_perm('pybb.add_topic'):
                 raise PermissionDenied
-            forum = get_object_or_404(filter_hidden(self.request, Forum), pk=self.kwargs['forum_id'])
-        elif 'topic_id' in self.kwargs:
-            topic = get_object_or_404(Topic, pk=self.kwargs['topic_id'])
+            forum = get_object_or_404(filter_hidden(self.request, Forum), slug=self.kwargs['forum_slug'])
+        elif 'topic_slug' in self.kwargs:
+            topic = get_object_or_404(Topic, slug=self.kwargs['topic_slug'])
             if topic.forum.hidden and (not self.user.is_staff):
                 raise Http404
             if topic.closed:
@@ -383,7 +397,7 @@ class DeletePostView(generic.DeleteView):
 class TopicActionBaseView(generic.View):
 
     def get_topic(self):
-        topic = get_object_or_404(Topic, pk=self.kwargs['pk'])
+        topic = get_object_or_404(Topic, slug=self.kwargs['slug'])
         if not pybb_topic_moderated_by(topic, self.request.user):
             raise PermissionDenied
         return topic
@@ -418,14 +432,14 @@ class OpenTopicView(TopicActionBaseView):
         topic.save()
 
 @login_required
-def delete_subscription(request, topic_id):
-    topic = get_object_or_404(Topic, pk=topic_id)
+def delete_subscription(request, slug):
+    topic = get_object_or_404(Topic, slug=slug)
     topic.subscribers.remove(request.user)
     return HttpResponseRedirect(topic.get_absolute_url())
 
 @login_required
-def add_subscription(request, topic_id):
-    topic = get_object_or_404(Topic, pk=topic_id)
+def add_subscription(request, slug):
+    topic = get_object_or_404(Topic, slug=slug)
     topic.subscribers.add(request.user)
     return HttpResponseRedirect(topic.get_absolute_url())
 
