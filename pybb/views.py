@@ -128,7 +128,7 @@ class TopicView(generic.ListView):
             return super(TopicView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        self.topic = get_object_or_404(Topic.objects.select_related('forum'), pk=self.kwargs['pk'])
+        self.topic = get_object_or_404(Topic.objects.select_related('forum'), slug=self.kwargs['slug'])
         if self.topic.on_moderation and\
            not pybb_topic_moderated_by(self.topic, self.request.user) and\
            not self.request.user == self.topic.user:
