@@ -46,7 +46,14 @@ urlpatterns += patterns('pybb.views',
     url('^profile/edit/$', ProfileEditView.as_view(), name='edit_profile'),
 
     # Topic
-    url('^topic/((?P<pk>\d+)|(?P<slug>[-\w]+))/$', TopicView.as_view(), name='topic'),
+    url(
+        '^topic/((?P<pk>\d+)|(?P<id>\d+))/$',
+        'redirect_topic', name='redirect_topic'
+    ),
+    url(
+        '^topic/(?P<slug>[-\w]+)/$',
+        TopicView.as_view(), name='topic'
+    ),
     url('^topic/(?P<slug>[-\w]+)/stick/$', StickTopicView.as_view(), name='stick_topic'),
     url('^topic/(?P<slug>[-\w]+)/unstick/$', UnstickTopicView.as_view(), name='unstick_topic'),
     url('^topic/(?P<slug>[-\w]+)/close/$', CloseTopicView.as_view(), name='close_topic'),
