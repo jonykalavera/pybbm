@@ -8,10 +8,13 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-	from django.template.defaultfilters import slugify
+        from django.template.defaultfilters import slugify
         for forum in orm.Forum.objects.all():
             forum.slug=slugify(forum.name)
-	    forum.save()
+            forum.save()
+        for topic in orm.Topic.objects.all():
+            topic.slug = slugify(topic.name)
+            topic.save()
 
 
     def backwards(self, orm):
