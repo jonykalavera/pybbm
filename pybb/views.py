@@ -58,7 +58,7 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return filter_hidden(self.request, Category)
 
-    
+
 class CategoryView(generic.DetailView):
 
     template_name = 'pybb/index.html'
@@ -73,6 +73,9 @@ class CategoryView(generic.DetailView):
         ctx['categories'] = [ctx['category']]
         return ctx
 
+def redirect_forum(request, id):
+    forum = get_object_or_404(Forum, kwargs={'id':id})
+    return HttpResponsePermanentRedirect(forum.get_absolute_url())
 
 class ForumView(generic.ListView):
 
@@ -80,8 +83,8 @@ class ForumView(generic.ListView):
     context_object_name = 'topic_list'
     template_name = 'pybb/forum.html'
     paginator_class = Paginator
-    
-    def dispatch(request, *args, **kwargs):
+
+    def dispatch(self, request, *args, **kwargs):
         if kwargs.get('id'):
             forum = get_object_or_404(Forum, pk=kwargs.get('id'))
             return HttpResponsePermanentRedirect(forum.get_absolute_url())
@@ -104,22 +107,28 @@ class ForumView(generic.ListView):
             else:
                 qs = qs.filter(on_moderation=False)
         return qs
-    
+
+
+def redirect_topic(request, id):
+    topic = get_object_or_404(Topic, kwargs={'id':id})
+    return HttpResponsePermanentRedirect(topic.get_absolute_url())
+
 
 class TopicView(generic.ListView):
     paginate_by = defaults.PYBB_TOPIC_PAGE_SIZE
     template_object_name = 'post_list'
     template_name = 'pybb/topic.html'
     paginator_class = Paginator
-    
-    def dispatch(request, *args, **kwargs):
+
+    def dispatch(self, request, *args, **kwargs):
         if kwargs.get('id'):
             topic = get_object_or_404(Topic, pk=kwargs.get('id'))
             return HttpResponsePermanentRedirect(topic.get_absolute_url())
         else:
+            return super(TopicView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        self.topic = get_object_or_404(Topic.objects.select_related('forum'), pk=self.kwargs['pk'])
+        self.topic = get_object_or_404(Topic.objects.select_related('forum'), slug=self.kwargs['slug'])
         if self.topic.on_moderation and\
            not pybb_topic_moderated_by(self.topic, self.request.user) and\
            not self.request.user == self.topic.user:
@@ -263,7 +272,7 @@ class AddPostView(FormChoiceMixin, generic.CreateView):
             else:
                 return self.render_to_response(self.get_context_data(form=form, aformset=aformset))
         return super(AddPostView, self).form_valid(form)
-        
+
     @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -292,7 +301,7 @@ class UserView(generic.DetailView):
         ctx = super(UserView, self).get_context_data(**kwargs)
         ctx['topic_count'] = Topic.objects.filter(user=ctx['target_user']).count()
         return ctx
-        
+
 
 class PostView(generic.RedirectView):
     def get_redirect_url(self, **kwargs):
