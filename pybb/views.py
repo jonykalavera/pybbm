@@ -110,7 +110,7 @@ class ForumView(generic.ListView):
 
 
 def redirect_topic(request, id):
-    topic = get_object_or_404(Topic, kwargs={'id':id})
+    topic = get_object_or_404(Topic, id=id)
     return HttpResponsePermanentRedirect(topic.get_absolute_url())
 
 
