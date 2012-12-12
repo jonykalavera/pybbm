@@ -279,7 +279,9 @@ class Topic(models.Model):
     def get_related(self):
         keywords=self.get_keywords()
         query = [models.Q(name__icontains=keyword) for keyword in keywords]
-        return Topic.objects.filter(reduce(lambda x, y: x|y, query))
+        related = Topic.objects.filter(reduce(lambda x, y: x|y, query))
+        related = related.exclude(pk=self.pk)
+        return related
         
 
 
