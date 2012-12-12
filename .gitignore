@@ -5,3 +5,4 @@ settings_local.py
 dist
 *.egg-info
 *.geany
+.c9revisions
