@@ -78,17 +78,17 @@ PYBB_ANONYMOUS_USERNAME = getattr(settings, 'PYBB_ANONYMOUS_USERNAME', 'Anonymou
 PYBB_PREMODERATION = getattr(settings, 'PYBB_PREMODERATION', False)
 PYBB_ENABLE_SELF_CSS = getattr(settings, 'PYBB_ENABLE_SELF_CSS', False)
 
-PYBB_FORUM_PICTURE_UPLOAD_PATH = "uploads/forums/"
-PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE = 104858 # 100kb = 0.1*2**10*2**10
-PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES = (
+PYBB_FORUM_PICTURE_UPLOAD_PATH = getattr(settings, 'PYBB_FORUM_PICTURE_UPLOAD_PATH', "uploads/forums/")
+PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE = getattr(settings, 'PYBB_FORUM_PICTURE_MAX_UPLOAD_SIZE', 104858) # 100kb = 0.1*2**10*2**10
+PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES = getattr(settings, 'PYBB_FORUM_PICTURE_ALLOWED_MIMETYPES', (
     'image/jpeg',
     'image/jpg',
     'image/png',
     'image/gif',
     'application/octet-stream',
-)
-PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS = (
+))
+PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS = getattr(settings, 'PYBB_FORUM_PICTURE_ALLOWED_EXTENSIONS', (
     'jpg',
     'png',
     'gif',
-)
+))
